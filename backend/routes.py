@@ -47,6 +47,8 @@ def post_user(_:Request, users: list[User]) -> Response:
 
 def update_user(_:Request, id:str,update:User) -> Response:
     try:
+        if "password" in update.keys():
+            update["password"] = hash(update.get("password"))
         db.execute_one(f"UPDATE users SET ({",".join(update.keys())}) = ({",".join(list(map(lambda v:f"'{v}'",update.values())))})")
         return jsonify({ "success":True })
     except Exception as e:
